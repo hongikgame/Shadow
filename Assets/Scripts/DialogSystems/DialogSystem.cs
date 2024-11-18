@@ -16,9 +16,12 @@ public class DialogSystem : MonoBehaviour
     private int currentDialogIndex = -1;
     private int currentSpeakerIndex = 0;
 
+    private float typingSpeed = 0.1f;
+    private bool isTypingEffect = false;
+
     private void Awake()
     {
-        
+        Setup();
     }
 
     private void Setup()
@@ -26,7 +29,7 @@ public class DialogSystem : MonoBehaviour
         //모든 대화 관련 게임오브젝트 비활성화
         for(int i = 0; i < speakers.Length; ++i)
         {
-            //SetActiveObjects(speakers[i], false)
+            SetActiveObjects(speakers[i], false);
             speakers[i].spriteRenderer.gameObject.SetActive(true);
         }
     }
@@ -40,24 +43,35 @@ public class DialogSystem : MonoBehaviour
             Setup();
 
             //자동 재생
-            //if(isAutoStart) SetNextDialog();
+            if(isAutoStart) SetNextDialog();
 
             isFirst = false;
         }
 
         if(Input.GetMouseButtonDown(0))
         {
+            if(isTypingEffect == true)
+            {
+                isTypingEffect = false;
+
+                StopCoroutine("OnTypingText");
+                speakers[currentSpeakerIndex].textDialogue.text = dialogs[currentDialogIndex].dialogue;
+                speakers[currentSpeakerIndex].objectArrow.SetActive(true);
+
+                return false;
+            }
+
             //대사가 남았을 경우 다음 대사 진행
             if(dialogs.Length > currentDialogIndex + 1)
             {
-                //SetNextDialog();
+                SetNextDialog();
             }
             //대사가 더 이상 없을 경우 
             else
             {
                 for(int i = 0; i < speakers.Length; ++i)
                 {
-                    //SetActiveObjects(speakers[i], false);
+                    SetActiveObjects(speakers[i], false);
                     speakers[i].spriteRenderer.gameObject.SetActive(false);
                 }
 
@@ -70,11 +84,41 @@ public class DialogSystem : MonoBehaviour
 
     private void SetNextDialog()
     {
-        //SetActiveObject(speakers[currentSpeakerIndex], false);
+        SetActiveObjects(speakers[currentSpeakerIndex], false);
         currentDialogIndex++;
         currentSpeakerIndex = dialogs[currentDialogIndex].speakerIndex;
+        SetActiveObjects(speakers[currentSpeakerIndex], true);
         speakers[currentSpeakerIndex].textName.text = dialogs[currentDialogIndex].name;
-        speakers[currentSpeakerIndex].textDialogue.text = dialogs[currentDialogIndex].dialogue;
+        //speakers[currentSpeakerIndex].textDialogue.text = dialogs[currentDialogIndex].dialogue;
+        StartCoroutine("OnTypingText");
+    }
+
+    private void SetActiveObjects(Speaker speaker, bool visible)
+    {
+        speaker.imageDialog.gameObject.SetActive(visible);
+        speaker.textName.gameObject.SetActive(visible);
+        speaker.textDialogue.gameObject.SetActive(visible);
+
+        speaker.objectArrow.SetActive(false);
+
+        Color color = speaker.spriteRenderer.color;
+        color.a = visible == true ? 1 : 0f;
+        speaker.spriteRenderer.color = color;
+    }
+
+    private IEnumerator OnTypingText()
+    {
+        int index = 0;
+        isTypingEffect = true;
+
+        while (index < dialogs[currentDialogIndex].dialogue.Length)
+        {
+            speakers[currentSpeakerIndex].textDialogue.text = dialogs[currentDialogIndex].dialogue.Substring(0, index);
+            index++;
+            yield return new WaitForSeconds(typingSpeed);
+        }
+        isTypingEffect = false;
+        speakers[currentSpeakerIndex].objectArrow.SetActive(true);
     }
 
     [System.Serializable]
