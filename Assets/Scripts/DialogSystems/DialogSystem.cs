@@ -9,7 +9,7 @@ public class DialogSystem : MonoBehaviour
     [SerializeField]
     private Speaker[] speakers; //대화 참여 캐릭터
     [SerializeField]
-    private DialogData[] dialogs; //현재 분기 대사 목록
+    public DialogData[] dialogs; //현재 분기 대사 목록
     [SerializeField]
     private bool isAutoStart = true;
     private bool isFirst = true;
