@@ -131,6 +131,7 @@ public class DialogSystem : MonoBehaviour
         public GameObject objectArrow;
     }
 
+
     [System.Serializable]
     public struct DialogData
     {
