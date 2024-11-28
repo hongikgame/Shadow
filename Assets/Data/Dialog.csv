@@ -1,0 +1,9 @@
+﻿event,narrator,talk,dialog,sprite
+200,Player,0,플레이어 이름 설정,
+100,Player,1,Player : {Player}* Shadow : {Shadow}* Narrator : {Narrator},
+100,Player,1,나는 플레이어. 너와 공감할 주인공.,
+100,Shadow,1,나는 그림자. 너를 인도할 고양이.,
+100,Narrator,1,나는 나레이터. 너에게 설명을 해주는 존재.,
+250,Shadow,0,LLM에게 줄 스크립트 ,
+300,T1|T2,0,뭘 골라야 할까?|1번|2번,
+100,Narrator,1,그걸 고를줄이야.,
